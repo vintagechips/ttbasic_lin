@@ -388,8 +388,8 @@ unsigned char toktoi() {
 			}
 			s = ptok;
 			ibuf[len++] = I_NUM;
-			ibuf[len++] = value & 255;
-			ibuf[len++] = value >> 8;
+			*(short *)(ibuf + len) = value;
+			len += 2;
 		}
 		else
 
