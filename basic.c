@@ -1105,7 +1105,7 @@ unsigned char* iexe() {
 			break;
 
 		case I_STOP:
-			while (*clp)
+			while (*clp > 3)
 				clp += *clp; // seek end
 			return clp;
 
@@ -1159,7 +1159,7 @@ void irun() {
 	lstki = 0;
 	clp = listbuf;
 
-	while (*clp) {
+	while (*clp > 3) {
 		cip = clp + 3;
 		lp = iexe();
 		if (err)
@@ -1175,10 +1175,10 @@ void ilist() {
 	lineno = (*cip == I_NUM) ? getlineno(cip) : 0;
 
 	for (clp = listbuf;
-	*clp && (getlineno(clp) < lineno);
+	(*clp > 3) && (getlineno(clp) < lineno);
 		clp += *clp);
 
-		while (*clp) {
+		while (*clp > 3) {
 			putnum(getlineno(clp), 0);
 			c_putch(' ');
 			putlist(clp + 3);
@@ -1234,7 +1234,7 @@ void icom() {
 // Print OK or error message
 void error() {
 	if (err) {
-		if (cip >= listbuf && cip < listbuf + SIZE_LIST && *clp)
+		if (cip >= listbuf && cip < listbuf + SIZE_LIST && *clp > 3)
 		{
 			newline();
 			c_puts("LINE:");
