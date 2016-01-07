@@ -492,7 +492,7 @@ void inslist() {
 		return;
 
 	// Make space
-	for (p1 = insp; *p1; p1 += *p1);
+	for (p1 = insp; *p1 > 3; p1 += *p1);
 	len = p1 - insp + 1;
 	p2 = p1 + *ibuf;
 	while (len--)
