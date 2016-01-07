@@ -440,7 +440,7 @@ unsigned char toktoi() {
 
 // Get line numbere by line pointer
 short getlineno(unsigned char *lp) {
-	if(*lp == 0) //end of list
+	if(*lp < 4) //end of list
 		return 32767;// max line bumber
 	return *(lp + 1) | *(lp + 2) << 8;
 }
@@ -449,7 +449,7 @@ short getlineno(unsigned char *lp) {
 unsigned char* getlp(short lineno) {
 	unsigned char *lp;
 
-	for (lp = listbuf; *lp; lp += *lp)
+	for (lp = listbuf; *lp > 3; lp += *lp)
 		if (getlineno(lp) >= lineno)
 			break;
 	return lp;
@@ -459,7 +459,7 @@ unsigned char* getlp(short lineno) {
 short getsize() {
 	unsigned char* lp;
 
-	for (lp = listbuf; *lp; lp += *lp);
+	for (lp = listbuf; *lp > 3; lp += *lp);
 	return listbuf + SIZE_LIST - lp - 1;
 }
 
@@ -480,7 +480,7 @@ void inslist() {
 	if (getlineno(insp) == getlineno(ibuf)) {// line number agree
 		p1 = insp;
 		p2 = p1 + *p1;
-		while ((len = *p2) != 0) {
+		while ((len = *p2) > 3) {
 			while (len--)
 				*p1++ = *p2++;
 		}
