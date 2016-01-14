@@ -13,8 +13,8 @@
 
 // TOYOSHIKI TinyBASIC symbols
 // TO-DO Rewrite defined values to fit your machine as needed
-#define SIZE_LINE 80 //Command line buffer length + NULL
-#define SIZE_IBUF 80 //i-code conversion buffer size
+#define SIZE_LINE 78 //Command line buffer length + NULL
+#define SIZE_IBUF 78 //i-code conversion buffer size
 #define SIZE_LIST 1024 //List buffer size
 #define SIZE_ARRY 64 //Array area size
 #define SIZE_GSTK 6 //GOSUB stack size(2/nest)
@@ -440,7 +440,7 @@ unsigned char toktoi() {
 
 // Get line numbere by line pointer
 short getlineno(unsigned char *lp) {
-	if(*lp < 4) //end of list
+	if(*lp == 0) //end of list
 		return 32767;// max line bumber
 	return *(lp + 1) | *(lp + 2) << 8;
 }
@@ -449,7 +449,7 @@ short getlineno(unsigned char *lp) {
 unsigned char* getlp(short lineno) {
 	unsigned char *lp;
 
-	for (lp = listbuf; *lp > 3; lp += *lp)
+	for (lp = listbuf; *lp; lp += *lp)
 		if (getlineno(lp) >= lineno)
 			break;
 	return lp;
@@ -459,7 +459,7 @@ unsigned char* getlp(short lineno) {
 short getsize() {
 	unsigned char* lp;
 
-	for (lp = listbuf; *lp > 3; lp += *lp);
+	for (lp = listbuf; *lp; lp += *lp);
 	return listbuf + SIZE_LIST - lp - 1;
 }
 
@@ -480,7 +480,7 @@ void inslist() {
 	if (getlineno(insp) == getlineno(ibuf)) {// line number agree
 		p1 = insp;
 		p2 = p1 + *p1;
-		while ((len = *p2) > 3) {
+		while (len = *p2) {
 			while (len--)
 				*p1++ = *p2++;
 		}
@@ -492,7 +492,7 @@ void inslist() {
 		return;
 
 	// Make space
-	for (p1 = insp; *p1 > 3; p1 += *p1);
+	for (p1 = insp; *p1; p1 += *p1);
 	len = p1 - insp + 1;
 	p2 = p1 + *ibuf;
 	while (len--)
@@ -1105,7 +1105,7 @@ unsigned char* iexe() {
 			break;
 
 		case I_STOP:
-			while (*clp > 3)
+			while (*clp)
 				clp += *clp; // seek end
 			return clp;
 
@@ -1159,7 +1159,7 @@ void irun() {
 	lstki = 0;
 	clp = listbuf;
 
-	while (*clp > 3) {
+	while (*clp) {
 		cip = clp + 3;
 		lp = iexe();
 		if (err)
@@ -1175,10 +1175,10 @@ void ilist() {
 	lineno = (*cip == I_NUM) ? getlineno(cip) : 0;
 
 	for (clp = listbuf;
-	(*clp > 3) && (getlineno(clp) < lineno);
+	*clp && (getlineno(clp) < lineno);
 		clp += *clp);
 
-		while (*clp > 3) {
+		while (*clp) {
 			putnum(getlineno(clp), 0);
 			c_putch(' ');
 			putlist(clp + 3);
@@ -1234,7 +1234,7 @@ void icom() {
 // Print OK or error message
 void error() {
 	if (err) {
-		if (cip >= listbuf && cip < listbuf + SIZE_LIST && *clp > 3)
+		if (cip >= listbuf && cip < listbuf + SIZE_LIST && *clp)
 		{
 			newline();
 			c_puts("LINE:");
