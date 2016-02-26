@@ -726,7 +726,7 @@ short iexp() {
 	if (err)
 		return -1;
 
-	// conditional expression 
+	// conditional expression
 	while (1)
 		switch (*cip) {
 		case I_EQ:
@@ -983,7 +983,7 @@ unsigned char* iexe() {
 			}
 
 			// push pointers
-			if (gstki > SIZE_GSTK - 2) { // stack overflow ?
+			if (gstki >= SIZE_GSTK - 2) { // stack overflow ?
 				err = ERR_GSTKOF;
 				break;
 			}
@@ -1040,7 +1040,7 @@ unsigned char* iexe() {
 			}
 
 			// push pointers
-			if (lstki > SIZE_LSTK - 5) { // stack overflow ?
+			if (lstki >= SIZE_LSTK - 5) { // stack overflow ?
 				err = ERR_LSTKOF;
 				break;
 			}
