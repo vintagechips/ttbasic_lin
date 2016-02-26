@@ -386,10 +386,10 @@ unsigned char toktoi() {
 				err = ERR_IBUFOF;
 				return 0;
 			}
-			s = ptok;
 			ibuf[len++] = I_NUM;
 			ibuf[len++] = value & 255;
 			ibuf[len++] = value >> 8;
+			s = ptok;
 		}
 		else
 
